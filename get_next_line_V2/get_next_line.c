@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 09:09:17 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/20 13:26:14 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/20 15:22:12 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ char *get_next_line(int fd)
 
     if (BUFFER_SIZE <= 0 || fd < 0)
        return (NULL);
+    if (status == 1 && read_val == 0)
+        return (NULL);
     if (status == 0)
         read_val = -1;
     status = 1;
@@ -67,8 +69,7 @@ char *get_next_line(int fd)
             get_line(result, stock);
             return (result);
         }
-    }
-        
+    }   
     while (read_val != 0)
     {
         buffer = malloc(sizeof(char) * BUFFER_SIZE);
@@ -81,11 +82,9 @@ char *get_next_line(int fd)
             get_line(result, stock);
             return (result);
         }
-        if (read_val == 0)
-            return (result);
         free(buffer);
     }
-    
-
+    if (read_val == 0)
+            return (result);
     return (NULL);
 }

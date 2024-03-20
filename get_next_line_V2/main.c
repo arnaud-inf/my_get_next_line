@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 10:15:56 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/20 11:56:21 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/20 15:26:18 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int main(void)
     while (res)
     {
         res = get_next_line(fd);
-        printf("DEBUT:\t%sFIN\t", res);
+        printf("%d:\t%s\n", i, res);
+        i++;
     }
     return (0);
 }
