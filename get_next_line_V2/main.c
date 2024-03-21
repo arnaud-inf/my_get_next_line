@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 10:15:56 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/20 15:26:18 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/21 15:39:16 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ int main(void)
     i = 1;
     res = ft_strdup("");
     fd = open("text", O_RDONLY);
-    while (res)
+    while (res != NULL)
     {
         res = get_next_line(fd);
-        printf("%d:\t%s\n", i, res);
+        printf("%d:\t%s", i, res);
         i++;
+        free(res);
     }
     return (0);
 }

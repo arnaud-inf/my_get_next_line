@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:57:29 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/20 11:56:25 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/21 15:39:12 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,20 @@ char	*ft_strdup(char *s)
 	return (result);
 }
 
-char	*ft_strchr(char *s, int c)
+int	ft_strchr(char *s, int c)
 {
 	size_t	i;
 	size_t	len_s;
 
 	i = 0;
 	len_s = ft_strlen((const char *)s);
-	if ((char)c == '\0')
-		return (s + len_s);
-	while (s[i] != '\0')
+	while (i < len_s)
 	{
 		if (s[i] == (char)c)
-			return (s + i);
+			return ((int)i);
 		i = i + 1;
 	}
-	return (NULL);
+	return (-1);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -92,6 +90,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		i++;
 	}
 	result[len_s1 + i] = '\0';
+	free(s1);
 	return (result);
 }
 

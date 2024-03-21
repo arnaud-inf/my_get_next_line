@@ -6,25 +6,11 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 09:09:17 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/20 15:22:12 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/21 15:39:14 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-int ft_indice(char *str)
-{
-    int i;
-
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '\n')
-            return (i);
-        i++;
-    }
-    return (-1);
-}
 
 char *ft_only_read(char *buffer, int read_val)
 {
@@ -35,56 +21,64 @@ char *ft_only_read(char *buffer, int read_val)
         result = ft_substr(buffer, 0, read_val);
         return (result);
     }
-    return (buffer);
+    return (NULL);
 }
 
-void get_line(char *result, char *stock)
+char *get_line(char *result, int indice)
 {
-    result = ft_substr(result, 0, ft_indice(result) + 1);
-    stock = ft_substr(result, ft_indice(result) + 1, ft_strlen(result));
+    char    *res;
+
+    if (indice != -1)
+    {
+        res = ft_substr(result, 0, indice + 1);
+        return (res);
+    }
+    return (NULL);
 }
 
 char *get_next_line(int fd)
 {
-    static char *stock;
-    static int read_val;
-    static int status;
-    char *buffer;
+    static char *buffer;
+    char *join;
     char *result;
+    int read_val;
+    int indice;
 
     if (BUFFER_SIZE <= 0 || fd < 0)
-       return (NULL);
-    if (status == 1 && read_val == 0)
         return (NULL);
-    if (status == 0)
-        read_val = -1;
-    status = 1;
-
-    result = ft_strdup("\0");
-    if (stock) 
+    join = ft_strdup("\0");
+    if (buffer)
     {
-        result = ft_strjoin(result, stock);
-        if (ft_strchr(result, (int)'\n') != NULL)
+        join = ft_strjoin(join, buffer);
+        result = get_line(join, ft_strchr(join, '\n'));
+        if (result != NULL)
         {
-            get_line(result, stock);
+            buffer = ft_substr(join, ft_strchr(join, (int)'\n') + 1, ft_strlen(join));
             return (result);
         }
-    }   
-    while (read_val != 0)
+    }
+    else
     {
         buffer = malloc(sizeof(char) * BUFFER_SIZE);
         if (!buffer)
             return (NULL);
+    }
+    read_val = 1;
+    while (read_val != 0)
+    {
         read_val = read(fd, buffer, BUFFER_SIZE);
-        result = ft_strjoin(result, ft_only_read(buffer, read_val));
-        if (ft_strchr(result, (int)'\n') != NULL)
+        if (read_val == -1 || read_val == 0)
+            break;
+        join = ft_strjoin(join, ft_only_read(buffer, read_val));
+        result = get_line(join, ft_strchr(join, '\n'));
+        if (result != NULL)
         {
-            get_line(result, stock);
+            buffer = ft_substr(join, ft_strchr(join, (int)'\n') + 1, ft_strlen(join));
             return (result);
         }
         free(buffer);
     }
-    if (read_val == 0)
-            return (result);
-    return (NULL);
+    if (join[0] == '\0')
+        join = NULL;
+    return (join);
 }
