@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:57:29 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/23 10:43:10 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/25 13:54:18 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		k++;
 	}
 	result[i + k] = '\0';
+	free(s1);
 	return (result);
 }
 

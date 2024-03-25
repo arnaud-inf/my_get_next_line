@@ -6,40 +6,11 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 09:09:17 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/23 10:45:30 by aelison          ###   ########.fr       */
+/*   Updated: 2024/03/25 15:13:26 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	char	*result;
-	size_t	i;
-
-	i = 0;
-	result = malloc(size * nmemb);
-	if (!result)
-		return (NULL);
-	while (i < nmemb * size)
-	{
-		result[i] = 0;
-		i = i + 1;
-	}
-	return ((void *)result);
-}
-
-static char	*ft_only_read(char *buffer, int read_val)
-{
-	char	*result;
-
-	if (read_val <= BUFFER_SIZE)
-	{
-		result = ft_substr(buffer, 0, read_val);
-		return (result);
-	}
-	return (NULL);
-}
 
 static char	*get_line(char *result, int indice)
 {
@@ -66,29 +37,33 @@ static char	*read_file(int fd, char *join, char *buffer, char **stock)
 		read_val = read(fd, buffer, BUFFER_SIZE);
 		if (read_val == -1)
 			break ;
-		join = ft_strjoin(join, ft_only_read(buffer, read_val));
+		buffer[read_val] = '\0';
+		join = ft_strjoin(join, buffer);
 		result = get_line(join, ft_strchr(join, '\n'));
 		if (result != NULL)
 		{
 			*stock = ft_substr(join, ft_strchr(join, '\n') + 1, read_val);
-			return (result);
+			return (free(buffer), free(join), result);
 		}
-		free(buffer);
 	}
 	if (join[0] == 0 || read_val == -1)
-		return (NULL);
-	return (join);
+		return (free(buffer), free(join), NULL);
+	return (free(buffer), join);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buffer;
 	char		*join;
 	char		*result;
+	char		*buffer;
 	static char	*stock;
 
+	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (NULL);
+	buffer = malloc(sizeof(char) * BUFFER_SIZE);
+	if (!buffer)
+		return (NULL);
 	join = ft_strdup("\0");
-	buffer = (char *)ft_calloc(BUFFER_SIZE, 1);
 	if (stock != NULL)
 	{
 		join = ft_strjoin(join, stock);
@@ -99,9 +74,8 @@ char	*get_next_line(int fd)
 	if (result != NULL)
 	{
 		stock = ft_substr(join, ft_strchr(join, '\n') + 1, ft_strlen(join));
-		return (result);
+		return (free(join), result);
 	}
-	free(result);
 	result = read_file(fd, join, buffer, &stock);
-	return (free(join), result);
+	return (result);
 }

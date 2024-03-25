@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/20 10:15:56 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/23 10:41:28 by aelison          ###   ########.fr       */
+/*   Created: 2024/03/25 11:21:04 by aelison           #+#    #+#             */
+/*   Updated: 2024/03/25 11:30:36 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 
 int main(void)
 {
-    char *res;
-    int i;
     int fd;
+    int i;
+    char *res;
 
-    i = 1;
-    res = ft_strdup("");
-   fd = open("text", O_RDONLY);
-    while (res != NULL)
+    fd = open("text", O_RDONLY);
+    i = 0;
+    res = ft_strdup("\0");
+    while (res)
     {
-        res = get_next_line(fd);
-        printf("%d:\t%s", i, res);
-        i++;
         free(res);
+        res = get_next_line(fd);
+        printf("%d\t%s", i, res);
+        i++;
     }
+    free(res);
+    close(fd);
 
     return (0);
 }
