@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 09:09:17 by aelison           #+#    #+#             */
-/*   Updated: 2024/03/25 15:13:26 by aelison          ###   ########.fr       */
+/*   Updated: 2024/05/30 08:47:19 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,20 @@ static char	*get_line(char *result, int indice)
 
 	if (indice != -1)
 	{
-		res = ft_substr(result, 0, indice + 1);
+		res = ft_substr_gnl(result, 0, (size_t)indice + 1);
 		return (res);
 	}
 	return (NULL);
+}
+
+static char	*get_stock(char *join, size_t start)
+{
+	char	*result;
+	size_t	len;
+
+	len = ft_strlen_gnl((const char *)join) - start;
+	result = ft_substr_gnl(join, start, len);
+	return (result);
 }
 
 static char	*read_file(int fd, char *join, char *buffer, char **stock)
@@ -30,19 +40,19 @@ static char	*read_file(int fd, char *join, char *buffer, char **stock)
 	char	*result;
 
 	if (BUFFER_SIZE <= 0)
-		return (NULL);
+		return (0);
 	read_val = 1;
 	while (read_val != 0)
 	{
 		read_val = read(fd, buffer, BUFFER_SIZE);
-		if (read_val == -1)
+		if (read_val == -1 || read_val == 0)
 			break ;
 		buffer[read_val] = '\0';
-		join = ft_strjoin(join, buffer);
-		result = get_line(join, ft_strchr(join, '\n'));
+		join = ft_strjoin_gnl(join, buffer);
+		result = get_line(join, ft_strchr_gnl(join, '\n'));
 		if (result != NULL)
 		{
-			*stock = ft_substr(join, ft_strchr(join, '\n') + 1, read_val);
+			*stock = get_stock (join, (size_t)ft_strchr_gnl(join, '\n') + 1);
 			return (free(buffer), free(join), result);
 		}
 	}
@@ -60,21 +70,21 @@ char	*get_next_line(int fd)
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	buffer = malloc(sizeof(char) * BUFFER_SIZE);
+	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	join = ft_strdup("\0");
+	join = ft_strdup_gnl("\0");
 	if (stock != NULL)
 	{
-		join = ft_strjoin(join, stock);
+		join = ft_strjoin_gnl(join, stock);
 		free(stock);
 		stock = NULL;
 	}
-	result = get_line(join, ft_strchr(join, '\n'));
+	result = get_line(join, ft_strchr_gnl(join, '\n'));
 	if (result != NULL)
 	{
-		stock = ft_substr(join, ft_strchr(join, '\n') + 1, ft_strlen(join));
-		return (free(join), result);
+		stock = get_stock(join, (size_t)ft_strchr_gnl(join, '\n') + 1);
+		return (free(buffer), free(join), result);
 	}
 	result = read_file(fd, join, buffer, &stock);
 	return (result);
